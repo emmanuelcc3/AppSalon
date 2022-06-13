@@ -1,0 +1,22 @@
+{
+    "name": "emman/app-salon-php",
+    "description": "Proyecto php 8 ,MCV,SQL,SASS,GULP",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "MVC\\" : "./",
+            "Controllers\\" : "./controllers",
+            "Model\\" : "./models",
+            "Classes\\c" : "./classes"
+        }
+    },
+    "authors": [
+        {
+            "name": "Emmanuel Calvo",
+            "email": "emmanuelcc3@hotmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.6"
+    }
+}
