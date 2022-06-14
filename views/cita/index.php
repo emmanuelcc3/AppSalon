@@ -53,3 +53,7 @@
         <button class="boton" id="siguiente">Siguiente &raquo;</button>
     </div>
 </div>
+
+<?php echo $script = "
+  <script src='build/js/app.js'></script>
+"; ?>
