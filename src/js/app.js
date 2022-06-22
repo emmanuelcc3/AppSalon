@@ -74,6 +74,7 @@ function botonesPaginador() {
     paginaAnterior.classList.remove("ocultar");
     paginaSiguiente.classList.add("ocultar");
     mostrarResumen();
+    
   } else {
     paginaAnterior.classList.remove("ocultar");
     paginaSiguiente.classList.remove("ocultar");
@@ -96,7 +97,6 @@ function paginaSiguiente() {
   paginaSiguiente.addEventListener("click", function () {
     if (paso >= pasoFinal) return;
     paso++;
-
     botonesPaginador();
   });
 }
@@ -153,7 +153,7 @@ function seleccionarServicio(servicio) {
     cita.servicios = [...servicios, servicio];
     divServicio.classList.add("seleccionado");
   }
-  console.log(servicio);
+  //console.log(servicio);
 }
 
 function nombreCliente() {
@@ -248,7 +248,6 @@ function mostrarResumen() {
 
     contenedorServicio.appendChild(textoServicio);
     contenedorServicio.appendChild(precioServicio);
-
     resumen.appendChild(contenedorServicio);
   });
 //Heading para cita
@@ -261,22 +260,52 @@ function mostrarResumen() {
 
   //Formatear la fecha en espanol
   const fechaObj = new Date(fecha);
-  const mes = fechaObj.getmonth();
+  const mes = fechaObj.getMonth();
   const dia = fechaObj.getDate() + 2;
   const year = fechaObj.getFullYear();
 
   const fechaUTC = new Date(Date.UTC(year, mes, dia));
   const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-  const fechaFormateada = fechaUTC.toLocaleDateString("es-MX");
-
+  const fechaFormateada = fechaUTC.toLocaleDateString("es-MX", opciones);
 
   const fechaCita = document.createElement("P");
-  fechaCita.innerHTML = `<span>Fecha:</span> ${fecha}`;
+  fechaCita.innerHTML = `<span>Fecha:</span> ${fechaFormateada}`;
 
   const horaCita = document.createElement("P");
   horaCita.innerHTML = `<span>Fecha:</span> ${hora} hrs`;
 
+  //Btn para generar la cita
+
+  const btnGenerar = document.createElement("BUTTON");
+  btnGenerar.classList.add("boton");
+  btnGenerar.textContent = "Reservar cita";
+  btnGenerar.onclick = reservarCita;
+
   resumen.appendChild(nombreCliente);
   resumen.appendChild(fechaCita);
   resumen.appendChild(horaCita);
+  resumen.appendChild(btnGenerar);
+}
+
+async function reservarCita(){
+  const {nombre, fecha, hora, servicios} = cita;
+
+  const idServicios = servicios.map(servicio => servicio.id)
+  const datos = new FormData();
+  datos.append('nombre', nombre);
+  datos.append('Fecha', fecha);
+  datos.append('Hora', hora);
+  datos.append('Servicios', idServicios);
+
+  const url = 'http://localhost:3000/api/citas';
+
+  const respuesta = await fetch(url, {
+    method: 'POST',
+    body: datos
+  });
+
+  const resultado = await respuesta.json();
+  console.log(resultado);
+
+
 }
