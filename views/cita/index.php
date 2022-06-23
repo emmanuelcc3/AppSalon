@@ -44,6 +44,9 @@
                 type="time"
                 />
             </div>
+
+            <input type="hidden" id="id" value="<?php echo $id; ?>">
+
         </form>
         </div>
         <div id="paso-3" class="seccion contenido-resumen">
@@ -58,5 +61,7 @@
 </div>
 
 <?php echo $script = "
+  <script src='//cdn.jsdelivr.net/npm/sweetalert2@11'></script>
   <script src='build/js/app.js'></script>
+
 "; ?>

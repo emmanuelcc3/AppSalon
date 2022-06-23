@@ -3,9 +3,10 @@ const pasoInicial = 1;
 const pasoFinal = 3;
 
 const cita = {
-  nombre: "",
-  fecha: "",
-  hora: "",
+  id: '',
+  nombre: '',
+  fecha: '',
+  hora: '',
   servicios: [],
 };
 
@@ -22,6 +23,7 @@ function iniciarApp() {
 
   consultarAPI(); //Consulta la API en el backend de PHP
 
+  idCliente(); 
   nombreCliente(); //Anade el nombre del cliente al objecto de cita
   seleccionarFecha(); //Anade la fecha al objecto de cita
   seleccionarHora(); //Anade la hora al objecto de cita
@@ -156,6 +158,10 @@ function seleccionarServicio(servicio) {
   //console.log(servicio);
 }
 
+function idCliente(){
+  cita.id = document.querySelector("#id").value;
+}
+
 function nombreCliente() {
   cita.nombre = document.querySelector("#nombre").value;
 }
@@ -288,16 +294,17 @@ function mostrarResumen() {
 }
 
 async function reservarCita(){
-  const {nombre, fecha, hora, servicios} = cita;
+  const {nombre, fecha, hora, servicios, id} = cita;
 
   const idServicios = servicios.map(servicio => servicio.id)
   const datos = new FormData();
-  datos.append('nombre', nombre);
-  datos.append('Fecha', fecha);
-  datos.append('Hora', hora);
+  datos.append('fecha', fecha);
+  datos.append('hora', hora);
+  datos.append('usuarioId', id);
   datos.append('Servicios', idServicios);
 
-  const url = 'http://localhost:3000/api/citas';
+  try {
+    const url = 'http://localhost:3000/api/citas';
 
   const respuesta = await fetch(url, {
     method: 'POST',
@@ -305,7 +312,30 @@ async function reservarCita(){
   });
 
   const resultado = await respuesta.json();
-  console.log(resultado);
+  console.log(resultado.resultado);
+
+  if (resultado.resultado) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Cita Creada',
+      text: 'Tu cita fue creada correctamente!',
+      button: 'OK'
+    }).then(() => {
+      setTimeout(() => {
+        window.location.reload();
+
+      }, 3000);
+    })
+  }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error...',
+      text: 'Hubo un error al guardar la cita!',
+    }) 
+  }
+
+  
 
 
 }
