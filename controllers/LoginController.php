@@ -66,7 +66,9 @@ class LoginController{
     }
 
     public static function logout() {
-        echo "Welcome logout";
+        isSession();
+        $_SESSION = [];
+        header('Location: /');
     }
 
     public static function olvide(Router $router) {

@@ -301,10 +301,11 @@ async function reservarCita(){
   datos.append('fecha', fecha);
   datos.append('hora', hora);
   datos.append('usuarioId', id);
-  datos.append('Servicios', idServicios);
+  datos.append('servicios', idServicios);
 
   try {
-    const url = 'http://localhost:3000/api/citas';
+
+  const url = 'http://localhost:3000/api/citas';
 
   const respuesta = await fetch(url, {
     method: 'POST',
