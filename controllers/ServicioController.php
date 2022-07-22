@@ -3,35 +3,90 @@
 namespace Controllers;
 
 use MVC\Router;
+use Model\Servicio;
 
 class ServicioController {
 
     public static function index(Router $router) {
-        $router->render('servicios/index',[
 
+        isSession();
+        isAdmin();
+        $servicios = Servicio::all();
+
+
+        $router->render('servicios/index',[
+            'nombre' => $_SESSION['nombre'],
+            'servicios' => $servicios
         ]);
       
 
     }
     public static function crear(Router $router) {
+        isSession();
+        isAdmin();
+
+        $servicio = new Servicio();
+
+        $alertas = [];
+
         
-        if ($_SESSION['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $servicio->sincronizar($_POST);
+            $alertas = $servicio->validar();
             # code...
+
+            if (empty($alertas)) {
+                $servicio->guardar();
+                header("Location: /servicios");
+                # code...
+            }
         }
+        $router->render('servicios/crear',[
+            'nombre' => $_SESSION['nombre'],
+            'servicio' => $servicio,
+            'alertas' => $alertas
+        ]);
 
     }
     public static function actualizar(Router $router) {
+        isSession();
+        isAdmin();
         
-        if ($_SESSION['REQUEST_METHOD'] === 'POST') {
-            # code...
+        if(!is_numeric($_GET['id'])) return;
+        $servicio = Servicio::find($_GET['id']);
+        $alertas = $servicio->validar();
+
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $servicio->sincronizar($_POST);
+            $alertas = $servicio->validar();
+
+
+            if (empty($alertas)) {
+                $servicio->guardar();
+                header("Location: /servicios");
+            }
+          
         }
+        $router->render('servicios/actualizar',[
+            'nombre' => $_SESSION['nombre'],
+            'servicio' => $servicio,
+            'alertas' => $alertas
+        ]);
         
     }
-    public static function eliminar(Router $router) {
+    public static function eliminar() {
         
-        if ($_SESSION['REQUEST_METHOD'] === 'POST') {
-            # code...
+        isAdmin();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $servicio = Servicio::find($id);
+            $servicio->eliminar();
+            header("Location: /servicios");
         }
+     
 
     }
 }
